@@ -18,7 +18,7 @@ func TestWriteReadme(t *testing.T) {
 ![Codecov](https://img.shields.io/codecov/c/gh/clambin/foo?style=plastic)
 ![Build](https://github.com/clambin/foo/workflows/Build/badge.svg)
 ![Go Report Card](https://goreportcard.com/badge/github.com/clambin/foo)
-![GitHub](https://img.shields.io/github/license/clambin/foo?style=plastic
+![GitHub](https://img.shields.io/github/license/clambin/foo?style=plastic)
 ` {
 		t.Log(out.String())
 		t.Fatal("unexpected output")

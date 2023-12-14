@@ -77,5 +77,5 @@ func writeGoReport(w io.Writer, info modInfo) {
 }
 
 func writeLicense(w io.Writer, info modInfo) {
-	_, _ = w.Write([]byte("![GitHub](https://img.shields.io/github/license/" + info.strippedPath + "?style=plastic\n"))
+	_, _ = w.Write([]byte("![GitHub](https://img.shields.io/github/license/" + info.strippedPath + "?style=plastic)\n"))
 }
