@@ -1,8 +1,8 @@
 package main
 
 import (
-	"bytes"
 	"errors"
+	"flag"
 	"fmt"
 	"golang.org/x/mod/modfile"
 	"io"
@@ -11,18 +11,20 @@ import (
 	"strings"
 )
 
+var input = flag.String("input", "go.mod", "path of the go.mod file to read")
+
 func main() {
-	filename := "go.mod"
-	if len(os.Args) > 1 {
-		filename = os.Args[1]
-	}
-	file, err := getModFile(filename)
+	flag.Parse()
+	f, err := os.Open(*input)
 	if err != nil {
 		panic(err)
 	}
-	var out bytes.Buffer
-	writeREADME(&out, file)
-	fmt.Println(out.String())
+	defer func() { _ = f.Close() }()
+	info, err := getModFile(f)
+	if err != nil {
+		panic(err)
+	}
+	writeREADME(os.Stdout, info)
 }
 
 type modInfo struct {
@@ -30,8 +32,8 @@ type modInfo struct {
 	strippedPath string
 }
 
-func getModFile(path string) (modInfo, error) {
-	mod, err := os.ReadFile(path)
+func getModFile(source io.Reader) (modInfo, error) {
+	mod, err := io.ReadAll(source)
 	if err != nil {
 		return modInfo{}, err
 	}
@@ -43,17 +45,17 @@ func getModFile(path string) (modInfo, error) {
 		return modInfo{}, errors.New("only supports github-hosted repos")
 	}
 
-	strippedPath, _ := strings.CutPrefix(file.Module.Mod.Path, "github.com/")
+	strippedPath := strings.TrimPrefix(file.Module.Mod.Path, "github.com/")
 	return modInfo{fullPath: file.Module.Mod.Path, strippedPath: strippedPath}, err
 }
 
-func writeREADME(readme io.Writer, info modInfo) {
-	writeTitle(readme, info)
-	writeTag(readme, info)
-	writeCodeCov(readme, info)
-	writeBuild(readme, info)
-	writeGoReport(readme, info)
-	writeLicense(readme, info)
+func writeREADME(w io.Writer, info modInfo) {
+	writeTitle(w, info)
+	writeTag(w, info)
+	writeCodeCov(w, info)
+	writeBuild(w, info)
+	writeGoReport(w, info)
+	writeLicense(w, info)
 }
 
 func writeTitle(w io.Writer, info modInfo) {
