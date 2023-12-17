@@ -14,11 +14,12 @@ func TestWriteReadme(t *testing.T) {
 	writeREADME(&out, info)
 
 	if out.String() != `# foo
-![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/clambin/foo?color=green&label=Release&style=plastic)
-![Codecov](https://img.shields.io/codecov/c/gh/clambin/foo?style=plastic)
-![Build](https://github.com/clambin/foo/workflows/Build/badge.svg)
-![Go Report Card](https://goreportcard.com/badge/github.com/clambin/foo)
-![GitHub](https://img.shields.io/github/license/clambin/foo?style=plastic)
+[![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/clambin/foo?color=green&label=Release&style=plastic)](https://github.com/clambin/foo/releases)
+[![Codecov](https://img.shields.io/codecov/c/gh/clambin/foo?style=plastic)](https://app.codecov.io/gh/clambin/foo)
+[![Test](https://github.com/clambin/foo/workflows/Test/badge.svg)](https://github.com/clambin/foo/actions)
+[![Build](https://github.com/clambin/foo/workflows/Build/badge.svg)](https://github.com/clambin/foo/actions)
+[![Go Report Card](https://goreportcard.com/badge/github.com/clambin/foo)](https://goreportcard.com/report/github.com/clambin/foo)
+[![License](https://img.shields.io/github/license/clambin/foo?style=plastic)](LICENSE.md)
 ` {
 		t.Fatalf("unexpected output:\n%s", out.String())
 	}

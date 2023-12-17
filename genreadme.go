@@ -53,6 +53,7 @@ func writeREADME(w io.Writer, info modInfo) {
 	writeTitle(w, info)
 	writeTag(w, info)
 	writeCodeCov(w, info)
+	writeTest(w, info)
 	writeBuild(w, info)
 	writeGoReport(w, info)
 	writeLicense(w, info)
@@ -63,21 +64,57 @@ func writeTitle(w io.Writer, info modInfo) {
 }
 
 func writeTag(w io.Writer, info modInfo) {
-	_, _ = w.Write([]byte("![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/" + info.strippedPath + "?color=green&label=Release&style=plastic)\n"))
+	writeLink(w,
+		"GitHub tag (latest by date)",
+		"https://img.shields.io/github/v/tag/"+info.strippedPath+"?color=green&label=Release&style=plastic",
+		"https://"+info.fullPath+"/releases",
+	)
 }
 
 func writeCodeCov(w io.Writer, info modInfo) {
-	_, _ = w.Write([]byte("![Codecov](https://img.shields.io/codecov/c/gh/" + info.strippedPath + "?style=plastic)\n"))
+	writeLink(w,
+		"Codecov",
+		"https://img.shields.io/codecov/c/gh/"+info.strippedPath+"?style=plastic",
+		"https://app.codecov.io/gh/"+info.strippedPath,
+	)
+}
+
+func writeTest(w io.Writer, info modInfo) {
+	writeWorkFlowResult(w, info, "Test")
 }
 
 func writeBuild(w io.Writer, info modInfo) {
-	_, _ = w.Write([]byte("![Build](https://" + info.fullPath + "/workflows/Build/badge.svg)\n"))
+	writeWorkFlowResult(w, info, "Build")
+}
+
+func writeWorkFlowResult(w io.Writer, info modInfo, action string) {
+	writeLink(w,
+		action,
+		"https://"+info.fullPath+"/workflows/"+action+"/badge.svg",
+		"https://"+info.fullPath+"/actions",
+	)
 }
 
 func writeGoReport(w io.Writer, info modInfo) {
-	_, _ = w.Write([]byte("![Go Report Card](https://goreportcard.com/badge/" + info.fullPath + ")\n"))
+	writeLink(w,
+		"Go Report Card",
+		"https://goreportcard.com/badge/"+info.fullPath,
+		"https://goreportcard.com/report/"+info.fullPath,
+	)
 }
 
 func writeLicense(w io.Writer, info modInfo) {
-	_, _ = w.Write([]byte("![GitHub](https://img.shields.io/github/license/" + info.strippedPath + "?style=plastic)\n"))
+	writeLink(w,
+		"License",
+		"https://img.shields.io/github/license/"+info.strippedPath+"?style=plastic",
+		"LICENSE.md",
+	)
+}
+
+func writeLink(w io.Writer, label, image, link string) {
+	output := "![" + label + "](" + image + ")"
+	if link != "" {
+		output = "[" + output + "](" + link + ")"
+	}
+	_, _ = w.Write([]byte(output + "\n"))
 }
