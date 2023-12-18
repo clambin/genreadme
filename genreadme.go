@@ -15,16 +15,23 @@ var input = flag.String("input", "go.mod", "path of the go.mod file to read")
 
 func main() {
 	flag.Parse()
-	f, err := os.Open(*input)
-	if err != nil {
+	if err := createREADME(os.Stdout, *input); err != nil {
 		panic(err)
+	}
+}
+
+func createREADME(w io.Writer, filename string) error {
+	f, err := os.Open(filename)
+	if err != nil {
+		return err
 	}
 	defer func() { _ = f.Close() }()
 	info, err := getModFile(f)
 	if err != nil {
-		panic(err)
+		return fmt.Errorf("modfile: %w", err)
 	}
-	writeREADME(os.Stdout, info)
+	writeREADME(w, info)
+	return nil
 }
 
 type modInfo struct {
@@ -56,6 +63,7 @@ func writeREADME(w io.Writer, info modInfo) {
 	writeTest(w, info)
 	writeBuild(w, info)
 	writeGoReport(w, info)
+	writeGoDoc(w, info)
 	writeLicense(w, info)
 }
 
@@ -108,6 +116,14 @@ func writeLicense(w io.Writer, info modInfo) {
 		"License",
 		"https://img.shields.io/github/license/"+info.strippedPath+"?style=plastic",
 		"LICENSE.md",
+	)
+}
+
+func writeGoDoc(w io.Writer, info modInfo) {
+	writeLink(w,
+		"GoDoc",
+		"https://pkg.go.dev/badge/"+info.fullPath+"?utm_source=godoc",
+		"https://pkg.go.dev/"+info.fullPath,
 	)
 }
 
